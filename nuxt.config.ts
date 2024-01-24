@@ -23,6 +23,8 @@ export default defineNuxtConfig({
     ['@nuxtjs/google-fonts', {
       families: {
         'Figtree': [400, 700],
+        'VT323': [400],
+        'Pixelify Sans': [400, 600, 700],
       },
     }],
   ],
