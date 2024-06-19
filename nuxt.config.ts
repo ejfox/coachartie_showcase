@@ -8,9 +8,9 @@ export default defineNuxtConfig({
       meta: [
         { charset: 'utf-8' },
         { name: 'viewport', content: 'width=device-width, initial-scale=1' },
-        { name: 'description', content: pkg.version },
-      ],
-    },
+        { name: 'description', content: pkg.version }
+      ]
+    }
   },
   ssr: false, // for netlify deploy
   devtools: { enabled: true },
@@ -20,13 +20,17 @@ export default defineNuxtConfig({
     '@nuxt/ui',
     '@nuxt/content',
     '@vueuse/motion/nuxt',
-    ['@nuxtjs/google-fonts', {
-      families: {
-        'Figtree': [400, 700],
-        'VT323': [400],
-        'Pixelify Sans': [400, 600, 700],
-      },
-    }],
+    '@tresjs/nuxt',
+    [
+      '@nuxtjs/google-fonts',
+      {
+        families: {
+          Figtree: [400, 700],
+          VT323: [400],
+          'Pixelify Sans': [400, 600, 700]
+        }
+      }
+    ]
   ],
   content: {
     documentDriven: true
@@ -35,7 +39,7 @@ export default defineNuxtConfig({
     // add the openai api key to the runtime config
     public: {
       OPENAI_API_KEY: process.env.OPENAI_API_KEY,
-      PRODUCTION: process.env.PRODUCTION,
-    },
-  },
+      PRODUCTION: process.env.PRODUCTION
+    }
+  }
 })

@@ -1,5 +1,5 @@
 <template>
-  <div class="tracking-wide bg-zinc-100 dark:bg-zinc-800 min-h-screen">
+  <div class="tracking-wide min-h-screen">
     <NuxtPage />
   </div>
 </template>
