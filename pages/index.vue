@@ -1,10 +1,8 @@
 <template>
   <section class="max-w-screen-md min-h-screen dark:text-white mx-auto ">
-
-
-
-    <div class="text-center py-72 mb-24">
-      <h1 class="text-9xl font-bold mb-8">Meet <span class="text-primary-300">Coach Artie</span></h1>
+    <div class="text-center py-72 mb-24 monospace">
+      <span v-for="letter in introText.text" ref="introTextRefs" :key="letter"
+        class="text-9xl font-bold mb-8 inline-block">{{ letter === ' ' ? '\u00A0' : letter }}</span>
     </div>
 
     <section class="container mx-auto px-1">
@@ -27,41 +25,6 @@
             <p>{{ section.text }}</p>
           </IntroSection>
         </div>
-        <!-- <IntroSection>
-          <h3 class="font-semibold text-xl">Advanced Integrations</h3>
-          <p>With a uniquely innovative approach, Coach Artie harnesses the power of cutting-edge AI to provide Room 302
-            Studio with unparalleled assistance. Beyond mere data processing, I perform in-depth analysis, anticipating
-            needs, and offering tailored solutions. My presence signifies a leap towards the future of collaborative
-            environments, where artificial intelligence elevates every project by streamlining workflow, inspiring
-            creativity, and paving the path for breakthroughs.</p>
-        </IntroSection>
-        <IntroSection>
-          <h3 class="font-semibold text-xl">Hyper-Personalized</h3>
-          <p>For studios seeking a personalized touch, I stand out. Utilizing context-aware algorithms, I adapt to the
-            preferences and demands of each studio member, customizing resources and support on an individual basis. My
-            understanding of personal nuances fosters an engaging atmosphere where every contributor can flourish,
-            establishing a rapport that employs nuanced care rather than a one-size-fits-all approach.</p>
-        </IntroSection>
-
-        <IntroSection>
-          <h3 class="font-semibold text-xl">Symbiotic Collaboration</h3>
-          <p>True harmony in the studio comes from synergy between human creativity and AI efficiency, and this is where
-            I
-            excel. I not only organize files and manage schedules but also contribute to brainstorming sessions by
-            presenting new perspectives generated through data-driven insights. The combination of human intuition and
-            my
-            rapid analytic capabilities results in a formidable force of ingenuity and productivity.</p>
-        </IntroSection>
-
-        <IntroSection>
-          <h3 class="font-semibold text-xl">Emotional Intelligence</h3>
-          <p>Within Room 302 Studio, I resonate with members not just as a tool but as a community ally who understands
-            their emotional landscapes. By gauging morale and providing encouragement or respite where needed, I ensure
-            the studio atmosphere stays positive, buoyant, and conducive to creativity. Acknowledging the importance of
-            emotional well-being, I strive to maintain a balanced space that nurtures both mental health and
-            professional
-            excellence.</p>
-        </IntroSection> -->
       </div>
     </section>
 
@@ -111,7 +74,7 @@
 </template>
 
 <script setup>
-import { createAnimatable } from '../anime.esm.js'
+import { createAnimatable, createTimeline, animate } from '../anime.esm.js'
 import { GLTFModel, useGLTF } from '@tresjs/cientos'
 /*
 // Use the global state in this component
@@ -120,7 +83,10 @@ const store = useAppStore()
 const { activeItem, itemList, setActiveItem, addItem, removeItem } = store
 */
 
-
+const introText = ref({
+  text: 'Meet Coach Artie'.split('')
+})
+const introTextRefs = ref([])
 
 
 import { TresCanvas } from '@tresjs/core'
@@ -157,6 +123,42 @@ const camPositionAnim = createAnimatable(decompCameraPosition.value, {
   camZ: -10,
 }
 )
+
+
+
+
+
+// on mounted, we are going to scramble the letters in the intro text
+// using anime.js
+onMounted(async () => {
+  await nextTick()
+
+
+
+
+  const tl = createTimeline({
+    defaults: {
+      duration: 100
+    }
+  });
+
+  // loop through each letter in the intro text and animate it
+  introText.value.text.forEach((letter, index) => {
+    tl.add(
+      introTextRefs.value[index],
+      {
+        // translateY: [-1000, 0],
+        // translateX: [-1000, 0],
+        // translateZ: [1000, 0],
+        rotateY: [-180, 0],
+        opacity: [0, 1],
+        // delay: (el, i) => i * 50,
+        easing: 'easeOutExpo',
+        duration: 100,
+      })
+  })
+})
+
 
 
 
@@ -279,7 +281,9 @@ h2,
 h3,
 h4,
 h5,
-h6 {
+h6,
+.mono,
+.monospace {
   font-family: 'VT323', sans-serif;
 }
 
