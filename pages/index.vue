@@ -1,31 +1,39 @@
 <template>
-  <section class="max-w-screen-md min-h-screen dark:text-white mx-auto">
-    <div class="text-center py-72 mb-24 monospace">
-      <span v-for="(letter, index) in introText" :key="index" ref="introTextRefs"
-        class="text-9xl font-bold mb-8 inline-block">{{ letter === ' ' ? '\u00A0' : letter }}</span>
+  <section ref="container" class="max-w-screen-md min-h-screen dark:text-white mx-auto monospace text-3xl">
+    <div class="text-center uppercase text-9xl py-12">
+      Meet Coach Artie
     </div>
 
-    <section v-for="(section, index) in sections" :key="index" class="container mx-auto px-1 feature-card"
-      :class="{ 'py-24': index > 0 }">
-      <h2 class="text-3xl font-semibold mb-9">{{ section.title }}</h2>
-      <p class="text-lg leading-relaxed mb-12">{{ section.content }}</p>
-      <div v-if="section.subsections">
-        <div v-for="subsection in section.subsections" :key="subsection.title" ref="introSectionRefs">
-          <h3 class="font-semibold text-xl">{{ subsection.title }}</h3>
-          <p>{{ subsection.text }}</p>
+    <section v-for="(section, index) in sections" :key="index"
+      class="container mx-auto feature-card w-full md:max-w-screen-sm ">
+      <div class="p-1">
+        <h2 class="">{{ section.title }}</h2>
+        <span class="bg-black/50 text-white backdrop-blur-sm">{{ section.content }}</span>
+        <div v-if="section.subsections">
+          <div v-for="subsection in section.subsections" :key="subsection.title" ref="introSectionRefs">
+            <h3 class="">{{ subsection.title }}</h3>
+            <span class="bg-black/70 text-white">{{ subsection.text }}</span>
+          </div>
         </div>
+        <button v-if="section.button"
+          class="bg-primary-300 text-gray-800 font-semibold rounded hover:bg-primary-400 transition duration-300">
+          {{ section.button }}
+        </button>
       </div>
-      <button v-if="section.button"
-        class="mt-12 px-1 py-3 bg-primary-300 text-gray-800 font-semibold rounded hover:bg-primary-400 transition duration-300">
-        {{ section.button }}
-      </button>
     </section>
+
+    <!-- kicker section -->
+    <div class="container mx-auto feature-card w-full md:max-w-screen-sm ">
+      <div class="p-1">
+        Get in touch: <a href="mailto:ejfox@ejfox.com" class="underline">email</a>
+      </div>
+    </div>
 
     <div class="bg-3d-scene fixed top-0 left-0 touch-none w-screen h-screen -z-10">
       <TresCanvas window-size preset="realistic" alpha shadows>
         <TresPerspectiveCamera :look-at="focusObjPosition"
           :position="[cameraPosition.x, cameraPosition.y, cameraPosition.z]" />
-        <TresDirectionalLight v-light-helper :position="[cameraPosition.x, cameraPosition.y, cameraPosition.z]"
+        <TresDirectionalLight :position="[cameraPosition.x, cameraPosition.y, cameraPosition.z]"
           :look-at="focusObjPosition" cast-shadow :intensity="lightIntensity" />
         <Suspense>
           <IntroObject :rotation="[focusObjRotation.x, focusObjRotation.y, focusObjRotation.z]" cast-shadow :scale="2.5"
@@ -45,7 +53,7 @@ import { createTimeline, createAnimatable, eases, utils } from '../anime.esm.js'
 
 const introText = 'Meet Coach Artie'.split('')
 const introTextRefs = ref([])
-const { y } = useWindowScroll()
+
 
 const focusObjPosition = ref([1, 0.5, 16, 32])
 const focusObjRotation = ref({ x: 0, y: -2, z: 0 })
@@ -57,18 +65,18 @@ const cameraPosition = ref({ x: 0.2, y: 10, z: 18 })
 
 const cameraKeyframes = {
   start: { x: 0.2, y: 10, z: 18 },
-  end: { x: 0.4, y: 14, z: -25 }
+  end: { x: 0.4, y: 20, z: -32 }
 }
 
 const lightIntensityKeyframes = {
   start: 0.01,
-  end: 0.1
+  end: 0.05
 }
 
-const focusObjKeyframes = {
-  start: { x: 1, y: 0.5, z: 16, scale: 2.5 },
-  end: { x: 1, y: 0.5, z: 16, scale: 2.5 }
-}
+// const focusObjKeyframes = {
+//   start: { x: 1, y: 0.5, z: 16, scale: 2.5 },
+//   end: { x: 1, y: 0.5, z: 16, scale: 2.5 }
+// }
 
 const sections = [
   {
@@ -105,7 +113,6 @@ const sections = [
 
 const introSectionRefs = ref([])
 
-let introTextAnimatable
 let focusObjAnimatable
 let lightIntensityAnimatable
 let cameraAnimatable
@@ -113,18 +120,15 @@ let cameraAnimatable
 onMounted(async () => {
   await nextTick()
   setupAnimatables()
-  animateIntroText()
   setupIntersectionObservers()
 })
 
 function setupAnimatables() {
-  introTextAnimatable = createAnimatable(introTextRefs.value, {
-    rotateY: { duration: 100, easing: eases.outExpo },
-    opacity: { duration: 100, easing: eases.outExpo },
-  })
 
   focusObjAnimatable = createAnimatable(focusObjRotation.value, {
     y: { duration: 1000, easing: eases.linear },
+    // y: { duration: 100 },
+
   })
 
   lightIntensityAnimatable = createAnimatable(lightIntensity, {
@@ -135,19 +139,6 @@ function setupAnimatables() {
     x: { duration: 1000, easing: eases.linear },
     y: { duration: 1000, easing: eases.linear },
     z: { duration: 1000, easing: eases.linear },
-  })
-}
-
-function animateIntroText() {
-  const tl = createTimeline({
-    defaults: { duration: 100 }
-  })
-
-  introTextRefs.value.forEach((ref, index) => {
-    tl.add(() => {
-      introTextAnimatable.rotateY(0, index)
-      introTextAnimatable.opacity(1, index)
-    }, index * 50)
   })
 }
 
@@ -166,16 +157,19 @@ function onSectionFocus(index, target) {
   // For example, you could trigger a specific animation or update the UI
 }
 
-const { height: windowHeight } = useWindowSize()
-
+// const { height: windowHeight } = useWindowSize()
+const container = ref(null)
+const { height } = useElementSize(container)
+const { y } = useWindowScroll()
 watch(y, (newY) => {
-  const scrollProgressPct = newY / windowHeight.value
+  const scrollProgressPct = newY / height.value
+  const lerpedY = utils.lerp(0, 2, scrollProgressPct)
 
-  focusObjAnimatable.y(scrollProgressPct * Math.PI * 0.1)
+  focusObjAnimatable.y(lerpedY)
 
-  lightIntensityAnimatable.value(
-    utils.lerp(lightIntensityKeyframes.start, lightIntensityKeyframes.end, scrollProgressPct)
-  )
+  // lightIntensityAnimatable.value(
+  //   utils.lerp(lightIntensityKeyframes.start, lightIntensityKeyframes.end, scrollProgressPct)
+  // )
 
   cameraAnimatable.x(utils.lerp(cameraKeyframes.start.x, cameraKeyframes.end.x, scrollProgressPct))
   cameraAnimatable.y(utils.lerp(cameraKeyframes.start.y, cameraKeyframes.end.y, scrollProgressPct))
@@ -201,6 +195,5 @@ body {
 
 .feature-card {
   margin: 99vh 0;
-  max-width: 48vw;
 }
 </style>
