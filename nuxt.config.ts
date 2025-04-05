@@ -7,7 +7,11 @@ export default defineNuxtConfig({
       title: pkg.name,
       meta: [
         { charset: 'utf-8' },
-        { name: 'viewport', content: 'width=device-width, initial-scale=1' },
+        {
+          name: 'viewport',
+          content:
+            'width=device-width, initial-scale=1, maximum-scale=5, viewport-fit=cover'
+        },
         { name: 'description', content: pkg.version }
       ]
     }
@@ -25,9 +29,10 @@ export default defineNuxtConfig({
       '@nuxtjs/google-fonts',
       {
         families: {
-          Figtree: [400, 700],
-          VT323: [400],
-          'Pixelify Sans': [400, 600, 700]
+          Inter: [300, 400, 500, 700],
+          Fraunces: [400, 700, 900, '900i'],
+          'IBM Plex Mono': [400, 500, 600],
+          VT323: [400]
         }
       }
     ]
