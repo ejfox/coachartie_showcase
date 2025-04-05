@@ -98,14 +98,6 @@
       </div>
     </div>
 
-    <!-- Mobile 3D interaction toggle -->
-    <div class="md:hidden fixed bottom-4 right-4 z-20">
-      <button @click="toggleMobileInteraction"
-        class="bg-stone-50/90 dark:bg-stone-900/90 shadow-md backdrop-blur-sm border border-stone-300 dark:border-stone-700 rounded-full p-3 text-stone-800 dark:text-stone-200 text-xs flex items-center justify-center">
-        <span class="mono uppercase tracking-wider">{{ isMobileInteractionEnabled ? 'Stop' : 'Play' }} 3D</span>
-      </button>
-    </div>
-
     <div class="bg-3d-scene fixed top-0 left-0 touch-none w-screen h-screen -z-10">
       <TresCanvas window-size preset="realistic" alpha shadows>
         <TresPerspectiveCamera :look-at="focusObjPosition"
@@ -191,47 +183,10 @@ let focusObjAnimatable
 let lightIntensityAnimatable
 let cameraAnimatable
 
-// Set up touch event handling for mobile devices
-const touchStartX = ref(0)
-const touchStartY = ref(0)
-const isMobileInteractionEnabled = ref(false)
-
-function handleTouchStart(e) {
-  touchStartX.value = e.touches[0].clientX
-  touchStartY.value = e.touches[0].clientY
-}
-
-function handleTouchMove(e) {
-  if (!isMobileInteractionEnabled.value) return
-
-  const touchX = e.touches[0].clientX
-  const touchY = e.touches[0].clientY
-
-  const deltaX = touchX - touchStartX.value
-  const deltaY = touchY - touchStartY.value
-
-  // Update 3D object rotation based on touch movement
-  focusObjAnimatable.y(focusObjRotation.value.y + deltaX * 0.01)
-
-  // Update touch start position
-  touchStartX.value = touchX
-  touchStartY.value = touchY
-}
-
-function toggleMobileInteraction() {
-  isMobileInteractionEnabled.value = !isMobileInteractionEnabled.value
-}
-
 onMounted(async () => {
   await nextTick()
   setupAnimatables()
   setupIntersectionObservers()
-
-  // Add touch event listeners for mobile
-  if (window) {
-    window.addEventListener('touchstart', handleTouchStart)
-    window.addEventListener('touchmove', handleTouchMove)
-  }
 
   setTimeout(() => {
     if (loadingOverlay.value) {
