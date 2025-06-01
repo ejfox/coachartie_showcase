@@ -25,17 +25,18 @@ export default defineNuxtConfig({
     '@nuxt/content',
     '@vueuse/motion/nuxt',
     '@tresjs/nuxt',
-    [
-      '@nuxtjs/google-fonts',
-      {
-        families: {
-          Inter: [300, 400, 500, 700],
-          Fraunces: [400, 700, 900, '900i'],
-          'IBM Plex Mono': [400, 500, 600],
-          VT323: [400]
-        }
-      }
-    ]
+    // Temporarily disable Google Fonts to fix build issues
+    // [
+    //   '@nuxtjs/google-fonts',
+    //   {
+    //     families: {
+    //       Inter: [300, 400, 500, 700],
+    //       Fraunces: [400, 700, 900, '900i'],
+    //       'IBM Plex Mono': [400, 500, 600],
+    //       VT323: [400]
+    //     }
+    //   }
+    // ]
   ],
   content: {
     documentDriven: true
